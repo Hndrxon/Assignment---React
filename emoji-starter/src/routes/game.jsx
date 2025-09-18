@@ -11,32 +11,29 @@ const WIN = 10;
 const LOSS = -15;
 
 export default function Game() {
-  const { score, addPoints, resetScore, maybeUpdateHigh } = useScore();
+  const { score, addPoints, resetScore } = useScore();
 
-  // load random questions only once
   const questions = useMemo(() => getRandomRound(ROUNDS), []);
   const [index, setIndex] = useState(0);
   const [feedback, setFeedback] = useState(null); // "correct" | "wrong" | null
   const [finished, setFinished] = useState(false);
 
-  // start with score 0
   useEffect(() => {
     resetScore();
-  }, [resetScore]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function handleAnswer(guess) {
-    const first = questions[index].word[0]; // first letter of the word
+    const first = questions[index].word[0];
     const ok = guess === first;
 
-    addPoints(ok ? WIN : LOSS);
+    addPoints(ok ? WIN : LOSS);      // update score
     setFeedback(ok ? "correct" : "wrong");
 
-    // next question or end game after a short delay
     setTimeout(() => {
       const next = index + 1;
       if (next >= questions.length) {
-        setFinished(true);
-        maybeUpdateHigh();
+        setFinished(true);          
       } else {
         setIndex(next);
         setFeedback(null);

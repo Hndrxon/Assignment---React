@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 const ScoreContext = createContext(null);
 
@@ -9,18 +9,32 @@ export function ScoreProvider({ children }) {
     return saved ? Number(saved) : 0;
   });
 
+
   useEffect(() => {
     localStorage.setItem("emoji-high-score", String(highScore));
   }, [highScore]);
 
+  const mountedRef = useRef(false);
+  useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      setScore(0);
+    }
+  }, []);
+
   const resetScore = () => setScore(0);
-  const addPoints = (n) => setScore((s) => s + n);
-  const maybeUpdateHigh = () => setHighScore((hs) => (score > hs ? score : hs));
+
+  // update score and high score
+  const addPoints = (n) => {
+    setScore((prev) => {
+      const next = prev + n;
+      setHighScore((hs) => (next > hs ? next : hs));
+      return next;
+    });
+  };
 
   return (
-    <ScoreContext.Provider
-      value={{ score, highScore, addPoints, resetScore, maybeUpdateHigh }}
-    >
+    <ScoreContext.Provider value={{ score, highScore, addPoints, resetScore }}>
       {children}
     </ScoreContext.Provider>
   );
