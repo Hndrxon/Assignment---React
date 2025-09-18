@@ -1,35 +1,19 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Outlet, NavLink } from "react-router-dom";
+import Layout from "./components/Layout";
+import { Button, Stack } from "@mui/material";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Layout
+      actions={
+        <Stack direction="row" spacing={1}>
+          <Button component={NavLink} to="/" color="inherit">Home</Button>
+          <Button component={NavLink} to="/game" color="inherit">Play</Button>
+          <Button component={NavLink} to="/high-score" color="inherit">High Score</Button>
+        </Stack>
+      }
+    >
+      <Outlet />
+    </Layout>
+  );
 }
-
-export default App
